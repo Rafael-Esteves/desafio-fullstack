@@ -22,7 +22,10 @@ function App() {
     <>
       <div className="flex flex-row w-full items-center justify-center mt-10">
         <div className="transition-all align-middle flex p-2 border border-[#323b45] rounded">
-          Saldo: R$ {balance.toFixed(2)}
+          Balance: R$ {balance.toFixed(2)}
+        </div>
+        <div className="transition-all align-middle flex p-2 border border-[#323b45] rounded">
+          Current Bet: R$ {currentBet ? currentBet.amount : 0}
         </div>
       </div>
       <div className="h-[700px] flex flex-row justify-center mt-6 2xl:mx-[15rem] bg-[#1A242D]">
@@ -135,12 +138,18 @@ function App() {
             <div className={`flex w-full py-6 justify-between`}>
               <button
                 onClick={() => {
+                  setButtonEnabled(false);
                   setBalance(balance - amount);
                   setCurrentBet({
                     amount: amount,
-                    numbers: color === "black" ? [8, 9, 10, 11, 12, 13, 14] : color === "red" ? [1, 2, 3, 4, 5, 6, 7] : [0],
-                  })}}
-
+                    numbers:
+                      color === "black"
+                        ? [8, 9, 10, 11, 12, 13, 14]
+                        : color === "red"
+                        ? [1, 2, 3, 4, 5, 6, 7]
+                        : [0],
+                  });
+                }}
                 disabled={!buttonEnabled}
                 className={`w-full rounded  h-16 flex items-center justify-center ${
                   buttonEnabled
@@ -155,7 +164,12 @@ function App() {
           <ControlsFooter></ControlsFooter>
         </div>
         <div className="w-2/3">
-          <Roulette setButtonEnabled={setButtonEnabled} currentBet={currentBet} setBalance={setBalance} setCurrentBet={setCurrentBet}></Roulette>
+          <Roulette
+            setButtonEnabled={setButtonEnabled}
+            currentBet={currentBet}
+            setBalance={setBalance}
+            setCurrentBet={setCurrentBet}
+          ></Roulette>
         </div>
       </div>
     </>
