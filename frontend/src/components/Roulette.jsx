@@ -3,7 +3,7 @@ import CountdownTimer from "./CountdownTimer";
 import Tile from "./Tile";
 
 //define os números que serão exibidos na roleta
-const tiles = [3, 9, 5, 11, 6, 7, 8, 4, 0, 12, 14, 10, 3, 2, 1];
+const tiles = [3, 9, 5, 11, 6, 7, 8, 4, 0, 12, 14, 10, 3, 2, 1, 13];
 //aqui eu optei por simplemente repetir a lista de números para que a roleta fique mais longa e dê a impressão de dar várias voltas antes de parar
 const allTiles = [
   ...tiles,

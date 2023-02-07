@@ -22,7 +22,7 @@ function App() {
     <>
       <div className="flex flex-row w-full items-center justify-center mt-10">
         <div className="transition-all align-middle flex p-2 border border-[#323b45] rounded">
-          Balance: R$ {balance.toFixed(2)}
+          Balance: R$ {balance}
         </div>
         <div className="transition-all align-middle flex p-2 border border-[#323b45] rounded">
           Current Bet: R$ {currentBet ? currentBet.amount : 0}
@@ -138,21 +138,24 @@ function App() {
             <div className={`flex w-full py-6 justify-between`}>
               <button
                 onClick={() => {
-                  setButtonEnabled(false);
-                  setBalance(balance - amount);
-                  setCurrentBet({
-                    amount: amount,
-                    numbers:
-                      color === "black"
-                        ? [8, 9, 10, 11, 12, 13, 14]
-                        : color === "red"
-                        ? [1, 2, 3, 4, 5, 6, 7]
-                        : [0],
-                  });
+                  console.log(amount)
+                  if (buttonEnabled && amount) {
+                    setButtonEnabled(false);
+                    setBalance(balance - amount);
+                    setCurrentBet({
+                      amount: amount,
+                      numbers:
+                        color === "black"
+                          ? [8, 9, 10, 11, 12, 13, 14]
+                          : color === "red"
+                          ? [1, 2, 3, 4, 5, 6, 7]
+                          : [0],
+                    });
+                  }
                 }}
-                disabled={!buttonEnabled}
+                disabled={!(buttonEnabled && amount)}
                 className={`w-full rounded  h-16 flex items-center justify-center ${
-                  buttonEnabled
+                  buttonEnabled && amount
                     ? "cursor-pointer bg-[#E6504B]"
                     : "cursor-not-allowed bg-[#5A2636]"
                 }`}
