@@ -9,13 +9,23 @@ function App() {
   const [amount, setAmount] = useState();
   const [color, setColor] = useState("black");
   const [totalBets, setTotalBets] = useState();
-  const [betButtonText, setBetButtonText] = useState("Waiting");
+  const [buttonEnabled, setButtonEnabled] = useState(false);
   const [totalBetsFocus, setTotalBetsFocus] = useState(false);
   const [amountFocus, setAmountFocus] = useState(false);
+  const [balance, setBalance] = useState(1000);
+  const [currentBet, setCurrentBet] = useState({
+    numbers: [],
+    amount: 0,
+  });
 
   return (
     <>
-      <div className="h-[700px] flex flex-row justify-center mt-16 2xl:mx-[15rem] bg-[#1A242D]">
+      <div className="flex flex-row w-full items-center justify-center mt-10">
+        <div className="transition-all align-middle flex p-2 border border-[#323b45] rounded">
+          Saldo: R$ {balance.toFixed(2)}
+        </div>
+      </div>
+      <div className="h-[700px] flex flex-row justify-center mt-6 2xl:mx-[15rem] bg-[#1A242D]">
         <div className="w-1/3 h-full border-r border-r-[#323b45] z-50 bg-[#1A242D] pl-10 pr-10 pt-5 pb-5 justify-between flex flex-col">
           <div>
             <div className=" flex-row justify-center">
@@ -122,18 +132,30 @@ function App() {
               isFocused={totalBetsFocus}
               emblemClass={"text-4xl"}
             ></NumberInput>
-            <div className={`flex w-full py-6 justify-between mb-40`}>
+            <div className={`flex w-full py-6 justify-between`}>
               <button
-                className={`w-full rounded bg-[#E6504B] h-16 flex items-center justify-center`}
+                onClick={() => {
+                  setBalance(balance - amount);
+                  setCurrentBet({
+                    amount: amount,
+                    numbers: color === "black" ? [8, 9, 10, 11, 12, 13, 14] : color === "red" ? [1, 2, 3, 4, 5, 6, 7] : [0],
+                  })}}
+
+                disabled={!buttonEnabled}
+                className={`w-full rounded  h-16 flex items-center justify-center ${
+                  buttonEnabled
+                    ? "cursor-pointer bg-[#E6504B]"
+                    : "cursor-not-allowed bg-[#5A2636]"
+                }`}
               >
-                {betButtonText}
+                {buttonEnabled ? "Bet" : "Waiting..."}
               </button>
             </div>
           </div>
           <ControlsFooter></ControlsFooter>
         </div>
         <div className="w-2/3">
-          <Roulette></Roulette>
+          <Roulette setButtonEnabled={setButtonEnabled} currentBet={currentBet} setBalance={setBalance} setCurrentBet={setCurrentBet}></Roulette>
         </div>
       </div>
     </>

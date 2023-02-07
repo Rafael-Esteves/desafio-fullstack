@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import CountdownTimer from "./CountdownTimer";
 import Tile from "./Tile";
 
 //define os números que serão exibidos na roleta
@@ -14,9 +15,8 @@ const allTiles = [
   ...tiles,
 ];
 
-function Roulette() {
-  const [tileNumbers, setTileNumbers] = useState(allTiles);
-  const [winner, setWinner] = useState(1);
+function Roulette({ setButtonEnabled, currentBet, setBalance, setCurrentBet }) {
+  const [winner, setWinner] = useState(Math.floor(Math.random() * 14) + 1);
   const [isRolling, setIsRolling] = useState(false);
   const [isWaiting, setIsWaiting] = useState(true);
   const [distance, setDistance] = useState(0);
@@ -24,18 +24,21 @@ function Roulette() {
   const ref = useRef(null);
 
   useEffect(() => {
-    const roll = () => {
-      setTransitionDuration(7800);
+    setTransitionDuration(7800);
+
+    const roll = async () => {
+      //define o número vencedor como um número aleatório entre 1 e 15
 
       setIsRolling(true);
       setIsWaiting(false);
+      setButtonEnabled(false);
 
       //Gera um número aleatório para simular a roleta parando em uma região aleatória do tile
       const random = Math.floor(Math.random() * 100) + 20;
       //define o tamanho de cada passo, sendo um passo igual à largura do tile + o gutter
       const step = 156;
       //define a posição do vencedor na penúltima volta da roleta, pegando o maior index que contem o número vencedor e subtraindo dele a volta final
-      const winnerPosition = tileNumbers.lastIndexOf(winner) - tiles.length;
+      const winnerPosition = allTiles.lastIndexOf(winner) - tiles.length;
       //Calcula quantos passos serão necessários para chegar na posição do vencedor
       const steps = winnerPosition * step;
       //Calcula a posição final da roleta, subtraindo a metade da largura do container para centralizar o tile vencedor
@@ -51,16 +54,29 @@ function Roulette() {
         setDistance(adjustedDistance);
         setTimeout(() => {
           setIsWaiting(true);
-
-          const firstZeroPosition = tileNumbers.indexOf(0);
+          setButtonEnabled(true);
+          const firstZeroPosition = allTiles.indexOf(0);
           const stepsToZero = firstZeroPosition * step;
           const finalZeroPosition = -stepsToZero + halfContainerWidth;
           setDistance(finalZeroPosition - (step / 2 - 6));
+          if (currentBet.numbers.includes(winner)) {
+            if (winner === 0) {
+              setBalance((prev) => prev + currentBet.amount * 14);
+            } else {
+              setBalance((prev) => prev + currentBet.amount * 2);
+            }
+          }
+          setCurrentBet({
+            amount: 0,
+            numbers: [],
+          });
+
           //set the
         }, 2000);
-      }, transitionDuration);
+      }, 7800);
     };
     roll();
+
     //Todo: escutar pelo evento de resize e rodar esse useEffect novamente, pois quando o tamanho da tela muda, a width do container também muda e a roleta fica desalinhada}
   }, [winner]);
 
@@ -86,7 +102,12 @@ function Roulette() {
     if (isWaiting) {
       return (
         <div className="w-full text-center">
-          <div className="text-2xl">Rolling in ...</div>
+          <div className="text-2xl">
+            <CountdownTimer
+              setWinner={setWinner}
+              duration={15000}
+            ></CountdownTimer>
+          </div>
         </div>
       );
     }
@@ -97,7 +118,11 @@ function Roulette() {
     <>
       <div className="h-3/4 m-4 border-b border-b-[#323b45] relative overflow-hidden ">
         <div className="z-10 absolute h-[14rem] w-1 bg-white top-0 bottom-0 right-0 left-0 m-auto"></div>
-        <div className={`bg-[#0f1923] absolute top-0 left-0 w-full h-full z-20  opacity-80 ${isWaiting ? '' : 'hidden'}`}></div>
+        <div
+          className={`bg-[#0f1923] absolute top-0 left-0 w-full h-full z-20  opacity-80 ${
+            isWaiting ? "" : "hidden"
+          }`}
+        ></div>
         <div
           ref={ref}
           className="w-full h-full bg-black rounded flex flex-col justify-around overflow-hidden"
@@ -105,6 +130,7 @@ function Roulette() {
           <div className="z-30 top-0 left-0 w-full px-10 pt-10 absolute text-center">
             {rollingText()}
             {winnerText()}
+            {waitingText()}
           </div>
           <div
             style={{
@@ -113,7 +139,7 @@ function Roulette() {
             }}
             className={`flex flex-row gap-3 ease-out transition-transform`}
           >
-            {tileNumbers.map((number, index) => (
+            {allTiles.map((number, index) => (
               <Tile number={number} key={index.toString()}></Tile>
             ))}
           </div>
