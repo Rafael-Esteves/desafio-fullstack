@@ -138,7 +138,6 @@ function App() {
             <div className={`flex w-full py-6 justify-between`}>
               <button
                 onClick={() => {
-                  console.log(amount)
                   if (buttonEnabled && amount) {
                     setButtonEnabled(false);
                     setBalance(balance - amount);

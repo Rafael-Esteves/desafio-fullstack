@@ -10,8 +10,8 @@ const CountdownTimer = ({ duration, setWinner }) => {
         setTimeLeft(timeLeft - 10);
         setProgress((timeLeft / duration) * 100);
       } else {
-        setWinner(Math.floor(Math.random() * 14) + 1);
         clearInterval(intervalId);
+        setWinner(Math.floor(Math.random() * 14) + 1);
       }
     }, 10);
     return () => clearInterval(intervalId);
