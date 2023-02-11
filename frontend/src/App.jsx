@@ -12,18 +12,21 @@ function App() {
   const [buttonEnabled, setButtonEnabled] = useState(false);
   const [totalBetsFocus, setTotalBetsFocus] = useState(false);
   const [amountFocus, setAmountFocus] = useState(false);
-  const [balance, setBalance] = useState(1000);
+  const [balance, setBalance] = useState(0);
   const [currentBet, setCurrentBet] = useState({
-    numbers: [],
-    amount: 0,
+    color: "black",
+    betAmount: 0,
   });
 
   useEffect(() => {
-    // const source = new EventSource("http://localhost:3001/api/cors");
-    const source = new EventSource('https://mongodb-starter-git-main-rafael-esteves.vercel.app/api/cors')
-
-    source.onmessage = (e) => console.log(e.data);
+    const getBalance = async () => {
+      const response = await fetch("https://mongodb-starter-one-gamma.vercel.app/api/balance");
+      const { value } = await response.json();
+      setBalance(value);
+    };
+    getBalance();
   }, []);
+
 
   return (
     <>
@@ -149,13 +152,8 @@ function App() {
                     setButtonEnabled(false);
                     setBalance(balance - amount);
                     setCurrentBet({
-                      amount: amount,
-                      numbers:
-                        color === "black"
-                          ? [8, 9, 10, 11, 12, 13, 14]
-                          : color === "red"
-                          ? [1, 2, 3, 4, 5, 6, 7]
-                          : [0],
+                      betAmount: amount,
+                      color: color,
                     });
                   }
                 }}

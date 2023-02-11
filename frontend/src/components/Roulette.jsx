@@ -16,7 +16,7 @@ const allTiles = [
 ];
 
 function Roulette({ setButtonEnabled, currentBet, setBalance, setCurrentBet }) {
-  const [winner, setWinner] = useState(Math.floor(Math.random() * 14) + 1);
+  const [winner, setWinner] = useState(20);
   const [isRolling, setIsRolling] = useState(false);
   const [isWaiting, setIsWaiting] = useState(true);
   const [distance, setDistance] = useState(0);
@@ -59,23 +59,18 @@ function Roulette({ setButtonEnabled, currentBet, setBalance, setCurrentBet }) {
           const stepsToZero = firstZeroPosition * step;
           const finalZeroPosition = -stepsToZero + halfContainerWidth;
           setDistance(finalZeroPosition - (step / 2 - 6));
-          if (currentBet.numbers.includes(winner)) {
-            if (winner === 0) {
-              setBalance((prev) => prev + currentBet.amount * 14);
-            } else {
-              setBalance((prev) => prev + currentBet.amount * 2);
-            }
-          }
           setCurrentBet({
-            amount: 0,
-            numbers: [],
+            betAmount: 0,
+            color: null,
           });
 
           //set the
         }, 2000);
       }, 7800);
     };
-    roll();
+    if (winner !== 20) {
+      roll();
+    }
 
     //Todo: escutar pelo evento de resize e rodar esse useEffect novamente, pois quando o tamanho da tela muda, a width do container também muda e a roleta fica desalinhada}
   }, [winner]);
@@ -106,6 +101,8 @@ function Roulette({ setButtonEnabled, currentBet, setBalance, setCurrentBet }) {
             <CountdownTimer
               setWinner={setWinner}
               duration={15000}
+              currentBet={currentBet}
+              setBalance={setBalance}
             ></CountdownTimer>
           </div>
         </div>

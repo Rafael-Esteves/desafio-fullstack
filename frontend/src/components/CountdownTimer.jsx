@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from "react";
 
-const CountdownTimer = ({ duration, setWinner }) => {
+const CountdownTimer = ({ duration, setWinner, currentBet, setBalance }) => {
   const [timeLeft, setTimeLeft] = useState(duration);
   const [progress, setProgress] = useState(100);
+
+  useEffect(() => {
+    const getRoll = async () => {
+      const response = await fetch("https://mongodb-starter-one-gamma.vercel.app/api/roll", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(currentBet),
+      });
+      const { winner, balance } = await response.json();
+      setWinner(winner);
+      setBalance(balance);
+    };
+    if (timeLeft <= 0){
+      getRoll();
+    }
+  }, [timeLeft]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -11,7 +29,6 @@ const CountdownTimer = ({ duration, setWinner }) => {
         setProgress((timeLeft / duration) * 100);
       } else {
         clearInterval(intervalId);
-        setWinner(Math.floor(Math.random() * 14) + 1);
       }
     }, 10);
     return () => clearInterval(intervalId);
