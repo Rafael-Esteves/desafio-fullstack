@@ -35,7 +35,7 @@ function App() {
           Balance: R$ {balance}
         </div>
         <div className="transition-all align-middle flex p-2 border border-[#323b45] rounded">
-          Current Bet: R$ {currentBet ? currentBet.amount : 0}
+          Current Bet: R$ {currentBet ? currentBet.betAmount : 0}
         </div>
       </div>
       <div className="h-[700px] flex flex-row justify-center mt-6 2xl:mx-[15rem] bg-[#1A242D]">
