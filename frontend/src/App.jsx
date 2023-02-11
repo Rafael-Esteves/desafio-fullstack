@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import ControlsFooter from "./components/ControlsFooter";
 import Roulette from "./components/Roulette";
@@ -17,6 +17,13 @@ function App() {
     numbers: [],
     amount: 0,
   });
+
+  useEffect(() => {
+    const source = new EventSource("http://localhost:3001/api/cors");
+    // const source = new EventSource('https://mongodb-starter-git-main-rafael-esteves.vercel.app/api/cors')
+
+    source.onmessage = (e) => console.log(e.data);
+  }, []);
 
   return (
     <>
